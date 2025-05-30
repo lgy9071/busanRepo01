@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.theater.dao.IEventDao">
+	<select id="getList" resultType="com.example.theater.dto.eventDto">
+		SELECT * FROM event_tbl
+	</select>
+	<insert id="insertEntry" parameterType="com.example.dto.entryDto">
+	    INSERT INTO event_entry_tbl (id, eno, user_id, entry_date)
+	    VALUES (entry_seq.NEXTVAL, #{eno}, #{userId}, SYSDATE)
+	</insert>
+
+	<select id="getEntryCount" resultType="int">
+	    SELECT COUNT(*) FROM event_entry_tbl
+	    WHERE eno = #{eno} AND user_id = #{user_id}
+	</select>
+	
+	<insert id="insertEvent" parameterType="com.example.theater.dto.eventDto">
+	    INSERT INTO event_tbl (eno, title, content, start_date, end_date)
+	    VALUES (event_seq.NEXTVAL, #{title}, #{content}, #{start_date}, #{end_date})
+	</insert>
+	
+	<insert id="insertEvent" parameterType="com.example.theater.dto.eventDto">
+	    INSERT INTO event_tbl (eno, title, content, start_date, end_date)
+	    VALUES (event_seq.NEXTVAL, #{title}, #{content}, #{start_date}, #{end_date})
+	</insert>
+</mapper>

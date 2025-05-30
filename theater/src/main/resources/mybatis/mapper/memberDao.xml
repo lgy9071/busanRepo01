@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.theater.dao.IMemberDao">
+	<select id="getList" resultType="com.example.theater.dto.memberDto">
+		SELECT * FROM tmember
+	</select>
+	
+	<select id="getMember" resultType="com.example.theater.dto.memberDto">
+		SELECT * FROM tmember WHERE id = #{id}
+	</select>
+	
+	<update id="update">
+		UPDATE tmember SET pw=#{m.pw}, name=#{m.name} WHERE id=#{m.id}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM tmember WHERE id = #{id}
+	</delete>
+	
+	<insert id="insert" parameterType="com.example.theater.dto.memberDto">
+		INSERT INTO tmember (id, pw, name)
+		VALUES (#{id}, #{pw}, #{name})
+	</insert>
+	
+	<select id="login" resultType="com.example.memberDto" parameterType="map">
+  		SELECT * FROM tmember WHERE id = #{id} AND pw = #{pw}
+	</select>
+</mapper>

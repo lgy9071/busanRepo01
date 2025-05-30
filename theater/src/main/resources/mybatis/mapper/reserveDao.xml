@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.theater.dao.IReserveDao">
+
+    <select id="getReserveListAll" resultType="com.example.theater.dto.reserveDto">
+        SELECT r.rid, r.pid, r.mid, p.title AS showTitle, r.rdate 
+        FROM treservation r
+        JOIN tperformance p ON r.pid = p.pid
+    </select>
+
+    <insert id="insertReserve" parameterType="com.example.theater.dto.reserveDto">
+        INSERT INTO treservation (rid, mid, pid, rdate)
+        VALUES (reserve_seq.NEXTVAL, #{mid}, #{pid}, SYSDATE)
+    </insert>
+
+</mapper>

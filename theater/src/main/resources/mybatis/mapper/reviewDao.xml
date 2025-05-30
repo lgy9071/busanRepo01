@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.theater.dao.IReviewDao">
+<insert id="insertReview">
+  INSERT INTO treview (reid, pid, mid, rcomment, rating, reg_date)
+  VALUES (review_seq.NEXTVAL, #{pid}, #{mid}, #{rcomment}, #{rating}, SYSDATE)
+</insert>
+
+<select id="getReviewsByPerformance" resultType="reviewDto">
+  SELECT * FROM treview WHERE pid = #{pid} ORDER BY reid DESC
+</select>
+
+</mapper>

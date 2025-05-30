@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.theater.dao.IBoardDao">
+	<select id="getList" resultType="com.example.theater.dto.boardDto">
+		SELECT * FROM tboard
+	</select>
+	
+	<insert id="insert" parameterType="com.example.theater.dto.boardDto">
+	    INSERT INTO tboard (bno, title, content, writer)
+	    VALUES (tboard_seq.NEXTVAL, #{title}, #{content}, #{writer})
+	</insert>
+	
+	<update id="updateBoard" parameterType="com.example.theater.dto.boardDto">
+	    UPDATE tboard
+	    SET title = #{title}, content = #{content}
+	    WHERE bno = #{bno}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+	    DELETE FROM tboard WHERE bno = #{bno}
+	</delete>
+</mapper>
