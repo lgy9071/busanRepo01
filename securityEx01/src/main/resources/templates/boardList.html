@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Board List</h2>
+	<hr>
+	<table border="1">
+		<tr>
+			<th>제목</th>
+			<th>내용</th>
+		</tr>
+		 <tr th:each="b : ${list}">
+	        <td th:text="${b.title}">제목</td>
+	        <td th:text="${b.content}">내용</td>
+	    </tr>
+	</table>
+</body>
+</html>
