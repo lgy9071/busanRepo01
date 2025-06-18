@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>Login Page</h1>
+<hr>
+<input type="text" id="username"><br>
+<input type="text" id="password"><br>
+<button onclick="login()">Login</button>
+<hr>
+<div id="demo">---</div>
+<script>
+	const txt_username = document.getElementById("username");
+	const txt_password = document.getElementById("password");
+	
+	function login(){
+		alert('login...');
+		var userData = {
+				"username": txt_username.value,
+				"password": txt_password.value
+		}
+		console.log(userData);
+		const xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			console.log(xhr.status);
+			const token = xhr.getResponseHeader('Authorization');
+			console.log('token: ' + token);
+			console.log(xhr.responseText);
+			document.getElementById("demo").innerHTML = this.responseText;
+			
+			localStorage.setItem('token', token);
+			location.href="/home";
+		}
+		
+		xhr.open('POST', '/api/login');
+		xhr.setRequestHeader('Content-type','application/json');
+		xhr.send(JSON.stringify(userData));
+	}
+</script>
+</body>
+</html>

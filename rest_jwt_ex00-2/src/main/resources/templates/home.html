@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>Home</h1>
+<hr>
+<button onclick="mypage()">인증 후 요청-mypage</button>
+<hr>
+<div id="demo">-----</div>
+<script>
+	function mypage(){
+		
+		console.log('인증후 요청....');
+		var token = localStorage.getItem('token');
+		console.log(token);
+		const xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			document.getElementById('demo').innerHTML = xhr.responseText;
+		}
+		xhr.open('GET', '/users/mypage');
+		xhr.setRequestHeader('Authorization', token);
+		xhr.send();
+	}
+</script>
+</body>
+</html>
