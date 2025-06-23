@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>별자리 회원가입</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 30px;
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #000022;
+          color: #eee;
+          overflow-x: hidden;
+          position: relative;
+          min-height: 100vh;
+        }
+
+        #starCanvas {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw;
+          height: 100vh;
+          pointer-events: none;
+          z-index: -1;
+          display: block;
+        }
+
+        h1 {
+          text-align: center;
+          color: #eee;
+          margin-bottom: 0;
+        }
+
+        form {
+          background: rgba(255, 255, 255, 0.9);
+          padding: 20px;
+          border-radius: 10px;
+          max-width: 500px;
+          margin: 0 auto;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          color: #333;
+        }
+
+        form div {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        input[type="text"], input[type="password"] {
+          padding: 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+        }
+
+        .button-wrapper {
+          margin-top: 20px;
+        }
+
+        .button-wrapper button {
+          display: block;
+          margin: 0 auto;
+          padding: 10px 20px;
+          width: 150px;
+          background-color: #4a90e2;
+          border: none;
+          color: white;
+          font-size: 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .button-wrapper button:hover {
+          background-color: #357bd8;
+        }
+    </style>
+</head>
+<body>
+<canvas id="starCanvas"></canvas>
+
+<h1>별자리 회원가입</h1>
+<br>
+
+<form action="/signup" method="POST">
+    <div>
+        <input type="text" name="username" placeholder="사용할 아이디" required />
+        <input type="password" name="password" placeholder="사용할 비밀번호" required />
+    </div>
+    <div class="button-wrapper">
+        <button type="submit">등록하기</button>
+    </div>
+</form>
+
+<script>
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Star {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.radius = Math.random() * 1.2 + 0.5;
+        this.alpha = Math.random();
+        this.alphaChange = 0.005 + Math.random() * 0.01;
+        this.speedX = (Math.random() - 0.5) * 0.1;
+        this.speedY = (Math.random() - 0.5) * 0.1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.alpha += this.alphaChange;
+        if (this.alpha <= 0 || this.alpha >= 1) this.alphaChange *= -1;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        ctx.shadowColor = 'white';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+      }
+    }
+
+    const stars = [];
+    for (let i = 0; i < 150; i++) stars.push(new Star());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      stars.forEach(star => {
+        star.update();
+        star.draw(ctx);
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+</script>
+</body>
+</html>
