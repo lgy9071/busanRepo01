@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 알림 구독</title>
+</head>
+<style>
+    <style>
+  /* 전체 배경과 폰트 */
+  body {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background-color: #f5f5f7;
+    color: #212121;
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #eb3d36; /* 쿠팡 레드 느낌 */
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    background: white;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  button {
+    background-color: #007aff;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 8px;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: #005bb5;
+  }
+
+  button:disabled {
+    background-color: #a1a1a1;
+    cursor: default;
+  }
+
+  /* 재고 수 텍스트 강조 */
+  li span.stock {
+    font-weight: 600;
+    color: #333;
+  }
+</style>
+</style>
+<body>
+<div id="header"></div>
+<h1>상품 목록 (사용자 화면)</h1>
+<ul id="product-list"></ul>
+<div id="footer"></div>
+
+<script>
+    fetch('/api/products')
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById('product-list');
+            data.forEach(p => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${p.name} (재고: ${p.stock})
+                    ${p.stock === 0
+                        ? `<button onclick="subscribe(${p.id}, this)">재입고 알림 받기</button>`
+                        : ''
+                    }
+                `;
+                ul.appendChild(li);
+            });
+        });
+
+    function subscribe(productId, btn) {
+        const eventSource = new EventSource("/api/products/subscribe/" + productId);
+
+        eventSource.addEventListener("restock", function(event) {
+            alert("✅ [알림] " + event.data);
+            btn.disabled = true;
+            eventSource.close();
+        });
+
+        eventSource.onerror = function(e) {
+            console.error("SSE 오류", e);
+            eventSource.close();
+        };
+    }
+
+    // 헤더, 푸터
+     window.addEventListener("DOMContentLoaded", () => {
+      fetch('/header.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('header').innerHTML = html;
+        });
+
+      fetch('/footer.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer').innerHTML = html;
+        });
+    });
+</script>
+</body>
+</html>

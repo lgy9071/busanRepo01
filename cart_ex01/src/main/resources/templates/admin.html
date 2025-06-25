@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>상품 재입고/재고 차감 (관리자)</title>
+</head>
+<style>
+  <style>
+  /* 전체 배경과 폰트 */
+  body {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background-color: #f5f5f7;
+    color: #212121;
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #eb3d36; /* 쿠팡 레드 느낌 */
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    background: white;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  button {
+    background-color: #007aff;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 8px;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: #005bb5;
+  }
+
+  button:disabled {
+    background-color: #a1a1a1;
+    cursor: default;
+  }
+
+  /* 재고 수 텍스트 강조 */
+  li span.stock {
+    font-weight: 600;
+    color: #333;
+  }
+</style>
+</style>
+<body>
+<div id="header"></div>
+<h1>재고 관리 (관리자 페이지)</h1>
+<ul id="admin-list"></ul>
+<div id="footer"></div>
+<script>
+  // 상품 목록 불러오기
+  fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+          const ul = document.getElementById('admin-list');
+          ul.innerHTML = ''; // 초기화
+          data.forEach(p => {
+              const li = document.createElement('li');
+              li.innerHTML = `
+                  ${p.name} (재고: ${p.stock})
+                  <button onclick="restock(${p.id})">+1 재입고</button>
+                  <button onclick="reduceStock(${p.id})">-1 재고 차감</button>
+              `;
+              ul.appendChild(li);
+          });
+      });
+
+  // 재입고 함수
+  function restock(productId) {
+      fetch(`/api/products/restock/${productId}?quantity=1`, {
+          method: 'POST'
+      })
+      .then(res => {
+          if (!res.ok) throw new Error('재입고 실패');
+          alert('✅ 재입고 완료');
+          location.reload(); // 갱신
+      })
+      .catch(err => {
+          console.error('에러:', err);
+      });
+  }
+
+  // 재고 차감 함수
+  function reduceStock(productId) {
+      fetch(`/api/products/reduceStock/${productId}?quantity=1`, {
+          method: 'POST'
+      })
+      .then(res => {
+          if (!res.ok) throw new Error('재고 차감 실패');
+          alert('✅ 재고 차감 완료');
+          location.reload(); // 갱신
+      })
+      .catch(err => {
+          console.error('에러:', err);
+      });
+  }
+
+  // 헤더, 푸터
+   window.addEventListener("DOMContentLoaded", () => {
+      fetch('/header.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('header').innerHTML = html;
+        });
+
+      fetch('/footer.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer').innerHTML = html;
+        });
+    });
+</script>
+</body>
+</html>
